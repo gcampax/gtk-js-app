@@ -17,12 +17,16 @@
 
 pkg.initSubmodule('libgd');
 pkg.require({ 'Gd': '1.0',
+              'Gdk': '3.0',
               'GLib': '2.0',
+              'GObject': '2.0',
               'Gtk': '3.0',
               'Lang': '1.0',
-              'Mainloop': '1.0' });
+              'Mainloop': '1.0',
+              'Params': '1.0' });
 
 const Util = imports.util;
+const Window = imports.window;
 
 const MyApplication = new Lang.Class({
     Name: 'MyApplication',
@@ -30,21 +34,18 @@ const MyApplication = new Lang.Class({
 
     _init: function() {
         this.parent({ application_id: 'org.example.MyJSApp' });
+        GLib.set_application_name(_("My JS Application"));
     },
 
     vfunc_startup: function() {
         this.parent();
 
+        Util.loadStyleSheet();
         log(_("My JS Application started"));
     },
 
     vfunc_activate: function() {
-        let builder = Util.loadUI('main.ui');
-
-        let win = builder.get_object('main-window');
-        win.application = this;
-
-        win.show();
+        (new Window.MainWindow({ application: this })).show();
     },
 });
 

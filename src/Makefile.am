@@ -5,7 +5,8 @@
 jsdir = $(pkgdatadir)
 dist_js_DATA = \
 	main.js \
-	util.js
+	util.js	\
+	window.js
 
 nodist_bin_SCRIPTS = my-js-app
 

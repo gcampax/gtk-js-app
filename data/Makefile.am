@@ -3,6 +3,9 @@
 uidir = $(pkgdatadir)
 ui_DATA = main.ui
 
+cssdir = $(pkgdatadir)
+css_DATA = application.css
+
 appsdir = $(datadir)/applications
 apps_DATA = my-js-app.desktop
 
