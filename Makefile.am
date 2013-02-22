@@ -17,4 +17,6 @@ MAINTAINERCLEANFILES = \
 	$(srcdir)/missing \
 	$(srcdir)/mkinstalldirs
 
+GITIGNOREFILES = .anjuta .anjuta_sym_db.db m4/
+
 include $(top_srcdir)/git.mk
