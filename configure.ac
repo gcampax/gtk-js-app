@@ -19,7 +19,9 @@ AC_PATH_PROG(GJS, [gjs])
 AC_OUTPUT([
 Makefile
 data/Makefile
+data/my-js-app.desktop.in
 libgd/Makefile
 src/Makefile
+src/my-js-app
 po/Makefile.in
 ])
