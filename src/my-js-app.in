@@ -1,0 +1,2 @@
+#!/bin/sh
+exec @GJS@ -c 'imports.package.start({ name: "@PACKAGE_NAME@", version: "@PACKAGE_VERSION@", prefix: "@prefix@" })'
