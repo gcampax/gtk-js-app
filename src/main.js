@@ -15,7 +15,9 @@
 // You should have received a copy of the GNU General Public License along
 // with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pkg.require({ 'GLib': '2.0',
+pkg.initSubmodule('libgd');
+pkg.require({ 'Gd': '1.0',
+              'GLib': '2.0',
               'Gtk': '3.0',
               'Lang': '1.0',
               'Mainloop': '1.0' });

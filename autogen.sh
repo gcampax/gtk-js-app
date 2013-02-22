@@ -17,4 +17,9 @@ which gnome-autogen.sh || {
     echo "your OS vendor's package manager)."
     exit 1
 }
+
+(cd "$srcdir" ;
+test -d m4 || mkdir m4/ ;
+git submodule update --init --recursive ;
+)
 . gnome-autogen.sh
