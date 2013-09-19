@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+_Name=JS Application
+_Comment=Demo JS Application and template
+Icon=@PACKAGE_NAME@
+Exec=@PACKAGE_TARNAME@
+DBusActivatable=true
+StartupNotify=true

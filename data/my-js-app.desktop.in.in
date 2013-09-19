@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-_Name=My JS Application
-_GenericName=Application Demo
-_Keywords=js;demo;app
-Exec=@GJS@ -c 'imports.package.start({ name: "@PACKAGE_NAME@", version: "@PACKAGE_VERSION@", prefix: "@prefix@" })'
-Icon=face-smile

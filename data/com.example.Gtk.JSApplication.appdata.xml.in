@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+  <id type="desktop">com.example.Gtk.JSApplication.desktop</id>
+  <licence>CC0</licence>
+  <description>
+    <_p>
+      A small but complete template to build a Gtk+ JS application,
+      using all the GNOME technologies and gjs.
+    </_p>
+    <_p>It features examples for:</_p>
+    <ul>
+      <_li>The build system (autotools based)</_li>
+      <_li>GSettings</_li>
+      <_li>GResources</_li>
+      <_li>Desktop file and appdata</_li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot type="default" width="1024" height="768">https://www.example.com/gtk-js-app/screenshots/large.png</screenshot>
+  </screenshots>
+  <url type="homepage">https://www.example.com/gtk-js-app</url>
+  <updatecontact>gcampagna_at_src.gnome.org</updatecontact>
+</application>

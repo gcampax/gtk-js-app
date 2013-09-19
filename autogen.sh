@@ -4,12 +4,12 @@
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
-PKG_NAME="my-js-app"
-ACLOCAL_FLAGS="-I libgd $ACLOCAL_FLAGS"
+ACLOCAL_FLAGS="-I libgd ${ACLOCAL_FLAGS}"
+PKG_NAME="gtk-js-app"
 
 test -f $srcdir/configure.ac || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
-    echo " top-level my-js-app directory"
+    echo " top-level gtk-js-app directory"
     exit 1
 }
 
@@ -24,3 +24,4 @@ test -d m4 || mkdir m4/ ;
 git submodule update --init --recursive ;
 )
 . gnome-autogen.sh
+

@@ -1,0 +1,3 @@
+#!@GJS@
+imports.searchPath.push("@pkgdatadir@");
+imports.package.launch({ name: "@PACKAGE_NAME@" });

@@ -24,11 +24,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Look ma, no imports!
+const Util = imports.util;
 
 const MainWindow = new Lang.Class({
     Name: 'MainWindow',
     Extends: Gtk.ApplicationWindow,
+    Properties: { 'search-active': GObject.ParamSpec.boolean('search-active', '', '', GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE, false) },
 
     _init: function(params) {
         params = Params.fill(params, { title: GLib.get_application_name(),
@@ -36,63 +37,108 @@ const MainWindow = new Lang.Class({
                                        default_height: 480 });
         this.parent(params);
 
-        let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
-        let header = new Gd.HeaderBar({ title: _("Current page"),
-                                        hexpand: true });
-        this._search = new Gd.HeaderToggleButton({ symbolic_icon_name: 'edit-find-symbolic' });
-        header.pack_end(this._search);
-        grid.add(header);
+        this._searchActive = false;
 
-        let searchbar = new SearchBar();
-        this._searchEntry = searchbar.entry;
-        let revealer = new Gd.Revealer({ child: searchbar,
-                                         reveal_child: false,
-                                         hexpand: true });
-        this._search.bind_property('active',
-                                   revealer, 'reveal-child',
-                                   GObject.BindingFlags.DEFAULT);
-        grid.add(revealer);
+        Util.initActions(this,
+                         [{ name: 'new',
+                             activate: this._new },
+                          { name: 'about',
+                            activate: this._about },
+                          { name: 'search-active',
+                            activate: this._toggleSearch,
+                            parameter_type: new GLib.VariantType('b'),
+                            state: new GLib.Variant('b', false) }]);
 
+        let builder = new Gtk.Builder();
+        builder.add_from_resource('/com/example/Gtk/JSApplication/main.ui');
+
+        this.set_titlebar(builder.get_object('main-header'));
+
+        let searchBtn = builder.get_object('search-active-button');
+        this.bind_property('search-active', searchBtn, 'active',
+                           GObject.BindingFlags.SYNC_CREATE |
+                           GObject.BindingFlags.BIDIRECTIONAL);
+        this._searchBar = builder.get_object('main-search-bar');
+        this.bind_property('search-active', this._searchBar, 'search-mode-enabled',
+                           GObject.BindingFlags.SYNC_CREATE |
+                           GObject.BindingFlags.BIDIRECTIONAL);
+        let searchEntry = builder.get_object('main-search-entry');
+        this._searchBar.connect_entry(searchEntry);
+
+        let grid = builder.get_object('main-grid');
         this._view = new MainView();
         this._view.visible_child_name = (Math.random() <= 0.5) ? 'one' : 'two';
         grid.add(this._view);
 
         this.add(grid);
         grid.show_all();
-    }
-});
 
-const SearchBar = new Lang.Class({
-    Name: 'SearchBar',
-    Extends: Gtk.Toolbar,
+        // Due to limitations of gobject-introspection wrt GdkEvent and GdkEventKey,
+        // this needs to be a signal handler
+        this.connect('key-press-event', Lang.bind(this, this._handleKeyPress));
+    },
 
-    _init: function(params) {
-        this.parent(params);
-        this.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
+    get search_active() {
+        return this._searchActive;
+    },
 
-        this.entry = new Gd.TaggedEntry({ width_request: 500,
-                                          halign: Gtk.Align.CENTER });
+    set search_active(v) {
+        if (this._searchActive == v)
+            return;
 
-        let item = new Gtk.ToolItem();
-        item.set_expand(true);
-        item.add(this.entry);
-        this.insert(item, 0);
-    }
+        this._searchActive = v;
+        // do something with v
+        this.notify('search-active');
+    },
+
+    _handleKeyPress: function(self, event) {
+        return this._searchBar.handle_event(event);
+    },
+
+    _new: function() {
+        log(_("New something"));
+    },
+
+    _about: function() {
+        let aboutDialog = new Gtk.AboutDialog(
+            { authors: [ 'Giovanni Campagna <gcampagna@src.gnome.org>' ],
+              translator_credits: _("translator-credits"),
+              program_name: _("JS Application"),
+              comments: _("Demo JS Application and template"),
+              copyright: 'Copyright 2013 The gjs developers',
+              license_type: Gtk.License.GPL_2_0,
+              logo_icon_name: 'com.example.Gtk.JSApplication',
+              version: pkg.version,
+              website: 'http://www.example.com/gtk-js-app/',
+              wrap_license: true,
+              modal: true,
+              transient_for: this
+            });
+
+        aboutDialog.show();
+        aboutDialog.connect('response', function() {
+            aboutDialog.destroy();
+        });
+    },
 });
 
 const MainView = new Lang.Class({
     Name: 'MainView',
-    Extends: Gd.Stack,
+    Extends: Gtk.Stack,
 
     _init: function(params) {
         params = Params.fill(params, { hexpand: true,
                                        vexpand: true });
         this.parent(params);
 
-        let one = this._addPage('one', _("First page"), _("Nothing here"));
-        one.connect('clicked', Lang.bind(this, function() {
+        this._settings = Util.getSettings(pkg.name);
+
+        this._buttonOne = this._addPage('one', _("First page"), '');
+        this._buttonOne.connect('clicked', Lang.bind(this, function() {
             this.visible_child_name = 'two';
         }));
+        this._syncLabel();
+        this._settings.connect('changed::show-exclamation-mark', Lang.bind(this, this._syncLabel));
 
         let two = this._addPage('two', _("Second page"), _("What did you expect?"));
         two.connect('clicked', Lang.bind(this, function() {
@@ -113,5 +159,12 @@ const MainView = new Lang.Class({
 
         this.add_named(grid, name);
         return buttonWidget;
-    }
+    },
+
+    _syncLabel: function() {
+        if (this._settings.get_boolean('show-exclamation-mark'))
+            this._buttonOne.label = _("Hello, world!");
+        else
+            this._buttonOne.label = _("Hello world");
+    },
 });

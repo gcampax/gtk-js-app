@@ -19,4 +19,6 @@ MAINTAINERCLEANFILES = \
 
 GITIGNOREFILES = .anjuta .anjuta_sym_db.db m4/
 
+distdir = $(PACKAGE_TARNAME)-$(VERSION)
+
 include $(top_srcdir)/git.mk
