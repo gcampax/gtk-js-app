@@ -33,6 +33,7 @@ const Gettext = imports.gettext;
 /*< public >*/
 var name;
 var version;
+var appFlags;
 var prefix;
 var datadir;
 var libdir;
@@ -45,11 +46,12 @@ var localedir;
 let _base;
 let _requires;
 
-function _runningFromSource(name) {
+function _runningFromSource() {
     let fileName = System.programInvocationName;
+    let prgName = GLib.path_get_basename(fileName);
 
     let binary = Gio.File.new_for_path(fileName);
-    let sourceBinary = Gio.File.new_for_path('./src/' + name);
+    let sourceBinary = Gio.File.new_for_path('./src/' + prgName);
     return binary.equal(sourceBinary);
 }
 
@@ -98,6 +100,7 @@ function init(params) {
     window.pkg = imports.package;
     name = params.name;
     version = params.version;
+    appFlags = params.flags;
 
     // Must call it first, because it can only be called
     // once, and other library calls might have it as a
@@ -109,7 +112,7 @@ function init(params) {
     datadir = GLib.build_filenamev([prefix, 'share']);
     let libpath, girpath;
 
-    if (_runningFromSource(name)) {
+    if (_runningFromSource()) {
         log('Running from source tree, using local files');
         // Running from source directory
         _base = GLib.get_current_dir();
@@ -120,6 +123,8 @@ function init(params) {
         localedir = GLib.build_filenamev([_base, 'po']);
         moduledir = GLib.build_filenamev([_base, 'src']);
     } else {
+	appFlags |= Gio.ApplicationFlags.IS_SERVICE;
+
         _base = prefix;
         pkglibdir = GLib.build_filenamev([libdir, name]);
         libpath = pkglibdir;
@@ -143,10 +148,12 @@ function init(params) {
  * You must define a main(ARGV) function inside a main.js
  * module in moduledir.
  */
-function start(params) {
+function start(params, args) {
+    params.flags = params.flags || 0;
+    args = args || ARGV;
     init(params);
 
-    return imports.main.main(ARGV);
+    return imports.main.main(args);
 }
 
 function _checkVersion(required, current) {
@@ -341,9 +348,15 @@ function _parseLaunchArgs(args, params) {
 
 function launch(params) {
     params.flags = params.flags || 0;
-    let app = new Gio.Application({ application_id: params.name,
-                                    flags: (Gio.ApplicationFlags.IS_LAUNCHER |
-                                            params.flags),
-                                  });
-    return app.run(_parseLaunchArgs(ARGV, params));
+    let args = _parseLaunchArgs(ARGV, params);
+
+    if (_runningFromSource()) {
+	return start(params, args);
+    } else {
+	params.flags |= Gio.ApplicationFlags.IS_LAUNCHER;
+
+	let app = new Gio.Application({ application_id: params.name,
+					flags: params.flags });
+	return app.run(args);
+    }
 }
