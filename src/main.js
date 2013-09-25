@@ -33,10 +33,13 @@ pkg.require({ 'Gd': '1.0',
               'Gio': '2.0',
               'GLib': '2.0',
               'GObject': '2.0',
-              'Gtk': '3.0',
-              'Lang': '',
-              'Mainloop': '',
-              'Params': '1.0' });
+              'Gtk': '3.0' });
+
+const Gd = imports.gi.Gd;
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 const Util = imports.util;
 const Window = imports.window;
@@ -53,8 +56,10 @@ const MyApplication = new Lang.Class({
 
     _init: function() {
         this.parent({ application_id: pkg.name,
-                      flags: Gio.ApplicationFlags.IS_SERVICE,
-                      inactivity_timeout: 60000 });
+                      flags: pkg.appFlags });
+        if (this.flags & Gio.ApplicationFlags.IS_SERVICE)
+            this.inactivity_timeout = 60000;
+
         GLib.set_application_name(_("My JS Application"));
     },
 
@@ -82,9 +87,6 @@ const MyApplication = new Lang.Class({
         this._initAppMenu();
 
         log(_("My JS Application started"));
-
-        if (pkg.pkgdatadir != pkg.moduledir) // running from source
-            this.activate();
     },
 
     vfunc_activate: function() {

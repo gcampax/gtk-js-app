@@ -24,6 +24,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+const Gdk = imports.gi.Gdk;
+const Gio = imports.gi.Gio;
+const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+const Params = imports.params;
+
 function loadUI(resourcePath, objects) {
     let ui = new Gtk.Builder();
 
