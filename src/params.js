@@ -1,9 +1,5 @@
 // -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*-
 
-// Rules for versioning: bump major when making API incompatible changes,
-// bump minor when adding API
-var $API_VERSION = [1, 0];
-
 // Params:
 //
 // A set of convenience functions for dealing with pseudo-keyword
