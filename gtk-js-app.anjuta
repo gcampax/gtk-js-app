@@ -1,37 +1,30 @@
 <?xml version="1.0"?>
 <anjuta>
-    <plugin name="GBF Project Manager"
-            url="http://anjuta.org/plugins/"
-            mandatory="yes">
-		<require group="Anjuta Plugin"
-                 attribute="Interfaces"
-                 value="IAnjutaProjectManager"/>
-		<require group="Project"
-                 attribute="Supported-Project-Types"
-                 value="automake"/>
-	</plugin>
-	<plugin name="Symbol Browser"
-            url="http://anjuta.org/plugins/"
-            mandatory="yes">
-                <require group="Anjuta Plugin"
-                 attribute="Interfaces"
-                 value="IAnjutaSymbolManager"/>
-	</plugin>
-	<plugin name="Make Build System"
-            url="http://anjuta.org/plugins/"
-            mandatory="yes">
-		<require group="Anjuta Plugin"
-                 attribute="Interfaces"
-                 value="IAnjutaBuildable"/>
-		<require group="Build"
-                 attribute="Supported-Build-Types"
-                 value="make"/>
-	</plugin>
-	<plugin name="Debug Manager"
-            url="http://anjuta.org/plugins/"
-            mandatory="no">
-		<require group="Anjuta Plugin"
-                 attribute="Interfaces"
-                 value="IAnjutaDebugManager"/>
-	</plugin>
+  <plugin name="GBF Project Manager" url="http://anjuta.org/plugins/" mandatory="yes">
+    <require group="Anjuta Plugin" attribute="Interfaces" value="IAnjutaProjectManager"/>
+    <require group="Project" attribute="Supported-Project-Types" value="automake"/>
+  </plugin>
+  <plugin name="Symbol Browser" url="http://anjuta.org/plugins/" mandatory="yes">
+    <require group="Anjuta Plugin" attribute="Interfaces" value="IAnjutaSymbolManager"/>
+  </plugin>
+  <plugin name="Make Build System" url="http://anjuta.org/plugins/" mandatory="yes">
+    <require group="Anjuta Plugin" attribute="Interfaces" value="IAnjutaBuildable"/>
+    <require group="Build" attribute="Supported-Build-Types" value="make"/>
+  </plugin>
+  <plugin name="Terminal" mandatory="yes">
+    <require group="Anjuta Plugin" attribute="Interfaces" value="IAnjutaTerminal"/>
+  </plugin>
+  <plugin name="Git" mandatory="yes">
+    <require group="Anjuta Plugin" attribute="Interfaces" value="IAnjutaVcs"/>
+    <require group="Vcs" attribute="System" value="Git"/>
+  </plugin>
+  <plugin name="JHBuild" mandatory="no">
+    <require group="Anjuta Plugin" attribute="Location" value="anjuta-jhbuild:JHBuildPlugin"/>
+  </plugin>
+  <plugin name="Debug Manager" url="http://anjuta.org/plugins/" mandatory="no">
+    <require group="Anjuta Plugin" attribute="Interfaces" value="IAnjutaDebugManager"/>
+  </plugin>
+  <plugin name="Javascript Debugger" mandatory="no">
+    <require group="Anjuta Plugin" attribute="Location" value="js_debugger:JSDbg"/>
+  </plugin>
 </anjuta>
