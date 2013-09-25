@@ -2,7 +2,7 @@
 [type: gettext/glade]data/main.ui
 data/com.example.Gtk.JSApplication.desktop.in.in
 data/com.example.Gtk.JSApplication.appdata.xml.in
-data/com.example.Gtk.JSApplication.gschema.xml
+[type: gettext/gsettings]data/com.example.Gtk.JSApplication.gschema.xml.in
 src/main.js
 
 

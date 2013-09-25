@@ -45,6 +45,12 @@ $(PACKAGE_NAME).search-provider.ini: $(PACKAGE_NAME).search-provider.ini.in
 		-e "s|[@]PACKAGE_DBUS_PATH@|$(PACKAGE_DBUS_PATH)|g" \
 		$< > $@
 
+$(PACKAGE_NAME).gschema.xml: $(PACKAGE_NAME).gschema.xml.in
+	$(AM_V_GEN) sed \
+		-e "s|[@]PACKAGE_NAME@|$(PACKAGE_NAME)|g" \
+		-e "s|[@]PACKAGE_DBUS_PATH@|$(PACKAGE_DBUS_PATH)|g" \
+		$< > $@
+
 servicedir = $(datadir)/dbus-1/services
 service_DATA = $(PACKAGE_NAME).service
 
@@ -57,7 +63,7 @@ EXTRA_DIST = \
 	$(PACKAGE_NAME).service.in \
 	$(PACKAGE_NAME).gresource.xml \
 	$(PACKAGE_NAME).search-provider.ini.in \
-	$(PACKAGE_NAME).gschema.xml \
+	$(PACKAGE_NAME).gschema.xml.in \
 	$(PACKAGE_NAME).appdata.xml.in \
 	$(resource_files) \
 	$(NULL)
@@ -67,6 +73,7 @@ CLEANFILES = \
 	$(PACKAGE_NAME).service \
 	$(PACKAGE_NAME).gresource \
 	$(PACKAGE_NAME).search-provider.ini \
+	$(PACKAGE_NAME).gschema.xml \
 	$(PACKAGE_NAME).appdata.xml \
 	$(apps_DATA) \
 	*.valid \
