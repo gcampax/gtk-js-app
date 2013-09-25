@@ -182,47 +182,6 @@ function _checkVersion(required, current) {
     return true;
 }
 
-function _isGjsModule(name, version) {
-    // This is a subset of the JS modules we offer,
-    // it includes only those that makes sense to use
-    // standalone and in a general app.
-    //
-    // You will not find Gettext or Format here, use
-    // the package functions instead. And Package, obviously,
-    // because it's available as window.package.
-    //
-    // cairo is also a JS module, but the version checking
-    // differs, see _isForeignModule()
-    //
-    // FIXME: Mainloop might be better as a GLib override?
-    // FIXME: Signals should be an extension to Lang
-    const RECOGNIZED_MODULE_NAMES = ['Lang',
-                                     'Mainloop',
-                                     'Signals',
-                                     'System',
-                                     'Params'];
-    for (let i = 0; i < RECOGNIZED_MODULE_NAMES.length; i++) {
-        let module = RECOGNIZED_MODULE_NAMES[i];
-
-        if (module == name) {
-            let actualModule = imports[module.toLowerCase()];
-            let required = version.split('.');
-
-            if (!_checkVersion(required, actualModule.$API_VERSION)) {
-                printerr('Unsatisfied dependency: requested GJS module at version '
-                         + version + ', but only ' + (actualModule.$API_VERSION.join('.'))
-                         + ' is available');
-                System.exit(1);
-            } else {
-                window[module] = actualModule;
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
 /**
  * require:
  * @libs: the external dependencies to import
@@ -232,9 +191,6 @@ function _isGjsModule(name, version) {
  * @libs must be an object whose keys are a typelib name,
  * and values are the respective version. The empty string
  * indicates any version.
- *
- * If dependencies are statisfied, require() will make
- * the module objects available as global names.
  */
 function require(libs) {
     _requires = libs;
@@ -242,21 +198,11 @@ function require(libs) {
     for (let l in libs) {
         let version = libs[l];
 
-        if (_isGjsModule(l, version))
-            continue;
-
         if (version != '')
             imports.gi.versions[l] = version;
 
         try {
-            if (name == 'cairo') {
-                // Import the GI package to check the version,
-                // but then load the JS one
-                imports.gi.cairo;
-                window.cairo = imports.cairo;
-            } else {
-                window[l] = imports.gi[l];
-            }
+            imports.gi[l];
         } catch(e) {
             printerr('Unsatisfied dependency: ' + e.message);
             System.exit(1);
