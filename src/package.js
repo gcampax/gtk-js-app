@@ -295,11 +295,55 @@ function initResources() {
     resource._register();
 }
 
+// Launcher support
+
+function _launcherUsage(flags) {
+    print('Usage:');
+
+    let name = GLib.path_get_basename(System.programInvocationName);
+    if (flags & Gio.ApplicationFlags.HANDLES_OPEN)
+	print('  ' + name + ' [OPTION...] [FILE...]\n');
+    else
+	print('  ' + name + ' [OPTION...]\n');
+
+    print('Options:');
+    print('  -h, --help   Show this help message');
+    print('  --version    Show the application version');
+}
+
+function _parseLaunchArgs(args, params) {
+    let newArgs = [];
+
+    for (let i = 0; i < args.length; i++) {
+	switch (args[i]) {
+	case '--':
+	    newArgs.concat(args.slice(i));
+	    return newArgs;
+
+	case '--help':
+	case '-h':
+	    _launcherUsage(params.flags);
+	    System.exit(0);
+	    break;
+
+	case '--version':
+	    print(params.name + ' ' + params.version);
+	    System.exit(0);
+	    break;
+
+	default:
+	    newArgs.push(args[i]);
+	}
+    }
+
+    return newArgs;
+}
+
 function launch(params) {
     params.flags = params.flags || 0;
     let app = new Gio.Application({ application_id: params.name,
                                     flags: (Gio.ApplicationFlags.IS_LAUNCHER |
                                             params.flags),
                                   });
-    return app.run(ARGV);
+    return app.run(_parseLaunchArgs(ARGV, params));
 }
