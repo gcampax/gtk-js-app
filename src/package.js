@@ -46,16 +46,11 @@ let _base;
 let _requires;
 
 function _runningFromSource(name) {
-    if (System.version >= 13600) {
-        let fileName = System.programInvocationName;
+    let fileName = System.programInvocationName;
 
-        let binary = Gio.File.new_for_path(fileName);
-        let sourceBinary = Gio.File.new_for_path('./src/' + name);
-        return binary.equal(sourceBinary);
-    } else {
-        return GLib.file_test(name + '.doap',
-                              GLib.FileTest.EXISTS);
-    }
+    let binary = Gio.File.new_for_path(fileName);
+    let sourceBinary = Gio.File.new_for_path('./src/' + name);
+    return binary.equal(sourceBinary);
 }
 
 /**
