@@ -11,7 +11,7 @@ AM_INIT_AUTOMAKE([1.11 dist-xz foreign tar-ustar no-define -Wno-portability])
 # revert automake using PACKAGE_TARNAME instead of PACKAGE_NAME
 AC_SUBST([PACKAGE], [$PACKAGE_NAME])
 
-PACKAGE_DBUS_PATH=`echo $PACKAGE_NAME | sed s,.,/,g`
+PACKAGE_DBUS_PATH=/`echo $PACKAGE_NAME | sed 's,\.,/,g'`
 AC_SUBST([PACKAGE_DBUS_PATH], [$PACKAGE_DBUS_PATH])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
