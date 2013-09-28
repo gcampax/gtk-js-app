@@ -26,8 +26,6 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 LT_INIT([disable-static])
 
-LIBGD_INIT([main-view gir])
-
 PKG_PROG_PKG_CONFIG([0.22])
 
 GLIB_GSETTINGS
@@ -49,7 +47,6 @@ AC_OUTPUT([
   Makefile
   data/Makefile
   data/icons/Makefile
-  libgd/Makefile
   src/Makefile
   po/Makefile.in
 ])

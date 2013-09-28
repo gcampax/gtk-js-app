@@ -1,6 +1,6 @@
-ACLOCAL_AMFLAGS = -I m4 -I libgd
+ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = po data libgd src
+SUBDIRS = po data src
 
 MAINTAINERCLEANFILES = \
 	$(srcdir)/INSTALL \

@@ -4,7 +4,7 @@
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
-ACLOCAL_FLAGS="-I libgd ${ACLOCAL_FLAGS}"
+ACLOCAL_FLAGS="${ACLOCAL_FLAGS}"
 PKG_NAME="gtk-js-app"
 
 test -f $srcdir/configure.ac || {

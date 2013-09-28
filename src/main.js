@@ -24,18 +24,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-pkg.initSubmodule('libgd');
 pkg.initGettext();
 pkg.initFormat();
 pkg.initResources();
-pkg.require({ 'Gd': '1.0',
-              'Gdk': '3.0',
+pkg.require({ 'Gdk': '3.0',
               'Gio': '2.0',
               'GLib': '2.0',
               'GObject': '2.0',
               'Gtk': '3.0' });
 
-const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
@@ -77,7 +74,6 @@ const MyApplication = new Lang.Class({
 
     vfunc_startup: function() {
         this.parent();
-        Gd.ensure_types();
 
         Util.loadStyleSheet('/com/example/Gtk/JSApplication/application.css');
 
