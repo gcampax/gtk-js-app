@@ -1,5 +1,0 @@
-[Shell Search Provider]
-DesktopId=@PACKAGE_NAME@.desktop
-BusName=@PACKAGE_NAME@
-ObjectPath=@PACKAGE_DBUS_PATH@
-Version=2

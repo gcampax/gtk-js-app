@@ -39,12 +39,6 @@ $(PACKAGE_NAME).desktop.in: $(PACKAGE_NAME).desktop.in.in
 		-e "s|[@]pkglibdir@|$(pkglibdir)|g" \
 		$< > $@
 
-$(PACKAGE_NAME).search-provider.ini: $(PACKAGE_NAME).search-provider.ini.in
-	$(AM_V_GEN) sed \
-		-e "s|[@]PACKAGE_NAME@|$(PACKAGE_NAME)|g" \
-		-e "s|[@]PACKAGE_DBUS_PATH@|$(PACKAGE_DBUS_PATH)|g" \
-		$< > $@
-
 $(PACKAGE_NAME).gschema.xml: $(PACKAGE_NAME).gschema.xml.in
 	$(AM_V_GEN) sed \
 		-e "s|[@]PACKAGE_NAME@|$(PACKAGE_NAME)|g" \
@@ -54,15 +48,10 @@ $(PACKAGE_NAME).gschema.xml: $(PACKAGE_NAME).gschema.xml.in
 servicedir = $(datadir)/dbus-1/services
 service_DATA = $(PACKAGE_NAME).service
 
-# ##example## comment if you're not implementing a gnome-shell search provider
-searchproviderdir = $(datadir)/gnome-shell/search-providers
-dist_searchprovider_DATA = $(PACKAGE_NAME).search-provider.ini
-
 EXTRA_DIST = \
 	$(PACKAGE_NAME).desktop.in.in \
 	$(PACKAGE_NAME).service.in \
 	$(PACKAGE_NAME).gresource.xml \
-	$(PACKAGE_NAME).search-provider.ini.in \
 	$(PACKAGE_NAME).gschema.xml.in \
 	$(PACKAGE_NAME).appdata.xml.in \
 	$(resource_files) \
@@ -72,7 +61,6 @@ CLEANFILES = \
 	$(PACKAGE_NAME).desktop.in \
 	$(PACKAGE_NAME).service \
 	$(PACKAGE_NAME).gresource \
-	$(PACKAGE_NAME).search-provider.ini \
 	$(PACKAGE_NAME).gschema.xml \
 	$(PACKAGE_NAME).appdata.xml \
 	$(apps_DATA) \
