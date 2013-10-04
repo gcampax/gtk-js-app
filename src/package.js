@@ -151,9 +151,15 @@ function init(params) {
 function start(params, args) {
     params.flags = params.flags || 0;
     args = args || ARGV;
-    init(params);
 
-    return imports.main.main(args);
+    if (args.length == 1 && args[0] == '--launch') {
+        args.splice(0, 1);
+
+        return launch(params, args);
+    } else {
+        init(params);
+        return imports.main.main(args);
+    }
 }
 
 function _checkVersion(required, current) {
@@ -292,9 +298,10 @@ function _parseLaunchArgs(args, params) {
     return newArgs;
 }
 
-function launch(params) {
+function launch(params, args) {
     params.flags = params.flags || 0;
-    let args = _parseLaunchArgs(ARGV, params);
+    args = args || ARGV;
+    args = _parseLaunchArgs(args, params);
 
     if (_runningFromSource()) {
 	return start(params, args);
