@@ -2,8 +2,8 @@
 Type=Application
 _Name=JS Application
 _Comment=Demo JS Application and template
-Icon=@PACKAGE_NAME@
-Exec=@PACKAGE_TARNAME@
+Icon=com.example.Gtk.JSApplication
+Exec=gapplication launch com.example.Gtk.JSApplication
 DBusActivatable=true
 StartupNotify=true
 _Keywords=gtk;gjs;demo;development;
