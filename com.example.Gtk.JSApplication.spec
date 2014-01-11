@@ -48,7 +48,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %doc NEWS COPYING
 %{_datadir}/appdata/%{name}.appdata.xml
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/dbus-1/services/%{name}.service
+%{_prefix}/lib/systemd/user/%{name}.service
+%{_prefix}/lib/systemd/user/%{name}.busname
+%{_prefix}/lib/systemd/user/busnames.target.wants/%{name}.busname
 %{_datadir}/glib-2.0/schemas/%{name}.gschema.xml
 #%{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/%{name}/

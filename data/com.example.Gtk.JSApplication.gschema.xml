@@ -1,5 +1,5 @@
-<schemalist gettext-domain="@PACKAGE_NAME@">
-  <schema id="@PACKAGE_NAME@" path="@PACKAGE_DBUS_PATH@/">
+<schemalist gettext-domain="com.example.Gtk.JSApplication">
+  <schema id="com.example.Gtk.JSApplication" path="/com/example/Gtk/JSApplication/">
     <key name="show-exclamation-mark" type="b">
       <default>true</default>
       <summary>Show exclamation mark</summary>

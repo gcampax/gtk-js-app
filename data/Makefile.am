@@ -26,25 +26,27 @@ appdata_DATA = $(PACKAGE_NAME).appdata.xml
 $(PACKAGE_NAME).service: $(PACKAGE_NAME).service.in
 	$(AM_V_GEN) sed \
 		-e "s|[@]PACKAGE_NAME@|$(PACKAGE_NAME)|g" \
-		-e "s|[@]PACKAGE_TARNAME@|$(PACKAGE_TARNAME)|g" \
 		-e "s|[@]pkgdatadir@|$(pkgdatadir)|g" \
 		-e "s|[@]pkglibdir@|$(pkglibdir)|g" \
+		-e "s|[@]bindir@|$(bindir)|g" \
 		$< > $@
 
-$(PACKAGE_NAME).gschema.xml: $(PACKAGE_NAME).gschema.xml.in
-	$(AM_V_GEN) sed \
-		-e "s|[@]PACKAGE_NAME@|$(PACKAGE_NAME)|g" \
-		-e "s|[@]PACKAGE_DBUS_PATH@|$(PACKAGE_DBUS_PATH)|g" \
-		$< > $@
+servicedir = $(prefix)/lib/systemd/user
+service_DATA = $(PACKAGE_NAME).service $(PACKAGE_NAME).busname
 
-servicedir = $(datadir)/dbus-1/services
-service_DATA = $(PACKAGE_NAME).service
+install-data-hook:
+	$(MKDIR_P) $(DESTDIR)$(servicedir)/busnames.target.wants
+	$(LN_S) ../$(PACKAGE_NAME).busname $(DESTDIR)$(servicedir)/busnames.target.wants/$(PACKAGE_NAME).busname
+
+uninstall-hook:
+	rm -f $(DESTDIR)$(servicedir)/busnames.target.wants/$(PACKAGE_NAME).busname
 
 EXTRA_DIST = \
 	$(PACKAGE_NAME).desktop.in \
 	$(PACKAGE_NAME).service.in \
+	$(PACKAGE_NAME).busname \
 	$(PACKAGE_NAME).gresource.xml \
-	$(PACKAGE_NAME).gschema.xml.in \
+	$(gsettings_SCHEMAS) \
 	$(PACKAGE_NAME).appdata.xml.in \
 	$(resource_files) \
 	$(NULL)
@@ -52,7 +54,6 @@ EXTRA_DIST = \
 CLEANFILES = \
 	$(PACKAGE_NAME).service \
 	$(PACKAGE_NAME).gresource \
-	$(PACKAGE_NAME).gschema.xml \
 	$(PACKAGE_NAME).appdata.xml \
 	$(apps_DATA) \
 	*.valid \

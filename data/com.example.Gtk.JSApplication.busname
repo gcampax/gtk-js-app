@@ -1,0 +1,11 @@
+[Unit]
+# Optional
+Description=com.example.Gtk.JSApplication
+# Optional (obviously)
+Documentation=http://www.example.com/gtk-js-app/
+
+[BusName]
+# Optional
+Name=com.example.Gtk.JSApplication
+# Optional
+Service=com.example.Gtk.JSApplication.service
