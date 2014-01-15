@@ -55,6 +55,10 @@ function _runningFromSource() {
     return binary.equal(sourceBinary);
 }
 
+function _makeNamePath(name) {
+    return '/' + name.replace('.', '/', 'g');
+}
+
 /**
  * init:
  * @params: package parameters
@@ -131,12 +135,27 @@ function init(params) {
         girpath = GLib.build_filenamev([pkglibdir, 'girepository-1.0']);
         pkgdatadir = GLib.build_filenamev([datadir, name]);
         localedir = GLib.build_filenamev([datadir, 'locale']);
-        moduledir = pkgdatadir;
+
+        try {
+            let resource = Gio.Resource.load(GLib.build_filenamev([pkg.pkgdatadir,
+                                                                   pkg.name + '.src.gresource']));
+            resource._register();
+
+            moduledir = 'resource://' + _makeNamePath(pkg.name) + '/js';
+        } catch(e) {
+            moduledir = pkgdatadir;
+        }
     }
 
     imports.searchPath.unshift(moduledir);
     GIRepository.Repository.prepend_search_path(girpath);
     GIRepository.Repository.prepend_library_path(libpath);
+
+    try {
+        let resource = Gio.Resource.load(GLib.build_filenamev([pkg.pkgdatadir,
+                                                               pkg.name + '.data.gresource']));
+        resource._register();
+    } catch(e) { }
 }
 
 /**
@@ -240,12 +259,6 @@ function initSubmodule(name) {
     } else {
         // Running installed, submodule is in $(pkglibdir), nothing to do
     }
-}
-
-function initResources() {
-    let resource = Gio.Resource.load(GLib.build_filenamev([pkg.pkgdatadir,
-                                                           pkg.name + '.gresource']));
-    resource._register();
 }
 
 // Launcher support
