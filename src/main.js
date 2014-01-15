@@ -26,7 +26,6 @@
 
 pkg.initGettext();
 pkg.initFormat();
-pkg.initResources();
 pkg.require({ 'Gdk': '3.0',
               'Gio': '2.0',
               'GLib': '2.0',

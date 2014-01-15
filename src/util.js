@@ -83,7 +83,7 @@ function getSettings(schemaId, path) {
     const GioSSS = Gio.SettingsSchemaSource;
     let schemaSource;
 
-    if (pkg.moduledir != pkg.pkgdatadir) {
+    if (pkg.moduledir.startsWith('resource://')) {
         // Running from the source tree
         schemaSource = GioSSS.new_from_directory(pkg.pkgdatadir,
                                                  GioSSS.get_default(),
