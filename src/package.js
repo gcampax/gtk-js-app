@@ -33,7 +33,6 @@ const Gettext = imports.gettext;
 /*< public >*/
 var name;
 var version;
-var appFlags;
 var prefix;
 var datadir;
 var libdir;
@@ -43,15 +42,20 @@ var moduledir;
 var localedir;
 
 /*< private >*/
+let _pkgname;
 let _base;
-let _requires;
+
+function _findEffectiveEntryPointName() {
+    let entryPoint = System.programInvocationName;
+    while (GLib.file_test(entryPoint, GLib.FileTest.IS_SYMLINK))
+        entryPoint = GLib.file_read_link(entryPoint);
+
+    return GLib.path_get_basename(entryPoint);
+}
 
 function _runningFromSource() {
-    let fileName = System.programInvocationName;
-    let prgName = GLib.path_get_basename(fileName);
-
-    let binary = Gio.File.new_for_path(fileName);
-    let sourceBinary = Gio.File.new_for_path('./src/' + prgName);
+    let binary = Gio.File.new_for_path(System.programInvocationName);
+    let sourceBinary = Gio.File.new_for_path('./src/' + name);
     return binary.equal(sourceBinary);
 }
 
@@ -66,7 +70,8 @@ function _makeNamePath(name) {
  * Initialize directories and global variables. Must be called
  * before any of other API in Package is used.
  * @params must be an object with at least the following keys:
- *  - name: the package name ($(PACKAGE_NAME) in autotools)
+ *  - name: the package name ($(PACKAGE_NAME) in autotools,
+ *          eg. org.foo.Bar)
  *  - version: the package version
  *  - prefix: the installation prefix
  *
@@ -76,7 +81,8 @@ function _makeNamePath(name) {
  * At the end, the global variable 'pkg' will contain the
  * Package module (imports.package). Additionally, the following
  * module variables will be available:
- *  - name, version: same as in @params
+ *  - name: the base name of the entry point (eg. org.foo.Bar.App)
+ *  - version: same as in @params
  *  - prefix: the installation prefix (as passed in @params)
  *  - datadir, libdir: the final datadir and libdir when installed;
  *                     usually, these would be prefix + '/share' and
@@ -102,9 +108,9 @@ function _makeNamePath(name) {
  */
 function init(params) {
     window.pkg = imports.package;
-    name = params.name;
+    _pkgname = params.name;
+    name = _findEffectiveEntryPointName();
     version = params.version;
-    appFlags = params.flags;
 
     // Must call it first, because it can only be called
     // once, and other library calls might have it as a
@@ -127,21 +133,19 @@ function init(params) {
         localedir = GLib.build_filenamev([_base, 'po']);
         moduledir = GLib.build_filenamev([_base, 'src']);
     } else {
-	appFlags |= Gio.ApplicationFlags.IS_SERVICE;
-
         _base = prefix;
-        pkglibdir = GLib.build_filenamev([libdir, name]);
+        pkglibdir = GLib.build_filenamev([libdir, _pkgname]);
         libpath = pkglibdir;
         girpath = GLib.build_filenamev([pkglibdir, 'girepository-1.0']);
-        pkgdatadir = GLib.build_filenamev([datadir, name]);
+        pkgdatadir = GLib.build_filenamev([datadir, _pkgname]);
         localedir = GLib.build_filenamev([datadir, 'locale']);
 
         try {
-            let resource = Gio.Resource.load(GLib.build_filenamev([pkg.pkgdatadir,
-                                                                   pkg.name + '.src.gresource']));
+            let resource = Gio.Resource.load(GLib.build_filenamev([pkgdatadir,
+                                                                   name + '.src.gresource']));
             resource._register();
 
-            moduledir = 'resource://' + _makeNamePath(pkg.name) + '/js';
+            moduledir = 'resource://' + _makeNamePath(name) + '/js';
         } catch(e) {
             moduledir = pkgdatadir;
         }
@@ -152,8 +156,8 @@ function init(params) {
     GIRepository.Repository.prepend_library_path(libpath);
 
     try {
-        let resource = Gio.Resource.load(GLib.build_filenamev([pkg.pkgdatadir,
-                                                               pkg.name + '.data.gresource']));
+        let resource = Gio.Resource.load(GLib.build_filenamev([pkgdatadir,
+                                                               name + '.data.gresource']));
         resource._register();
     } catch(e) { }
 }
@@ -167,38 +171,25 @@ function init(params) {
  * You must define a main(ARGV) function inside a main.js
  * module in moduledir.
  */
-function start(params, args) {
-    params.flags = params.flags || 0;
-    args = args || ARGV;
+function start(params) {
     init(params);
-
-    return imports.main.main(args);
+    run(imports.main);
 }
 
-function _checkVersion(required, current) {
-    if (required == '') {
-        // No requirement
-        return true;
-    }
-
-    // Major version must match, it's used for API
-    // incompatible changes.
-    // The rest just needs to be less or equal to
-    // current. The code is generic, but gjs modules
-    // should use only [major, minor]
-    if (required[0] != current[0])
-        return false;
-
-    for (let i = 1; i < Math.min(current.length, required.length); i++) {
-        if (required[i] > current[i])
-            return false;
-        if (required[i] < current[i])
-            return true;
-
-        // else they're equal, go on
-    }
-
-    return true;
+/**
+ * run:
+ * @module: the module to run
+ *
+ * This is the function to use if you want to have multiple
+ * entry points in one package.
+ * You must define a main(ARGV) function inside the passed
+ * in module, and then the launcher would be
+ *
+ * imports.package.init(...);
+ * imports.package.run(imports.entrypoint);
+ */
+function run(module) {
+    return module.main([System.programInvocationName].concat(ARGV));
 }
 
 /**
@@ -212,8 +203,6 @@ function _checkVersion(required, current) {
  * indicates any version.
  */
 function require(libs) {
-    _requires = libs;
-
     for (let l in libs) {
         let version = libs[l];
 
@@ -229,13 +218,9 @@ function require(libs) {
     }
 }
 
-function dumpRequires() {
-    print(JSON.stringify(_requires));
-}
-
 function initGettext() {
-    Gettext.bindtextdomain(name, localedir);
-    Gettext.textdomain(name);
+    Gettext.bindtextdomain(_pkgname, localedir);
+    Gettext.textdomain(_pkgname);
 
     let gettext = imports.gettext;
     window._ = gettext.gettext;
@@ -258,64 +243,5 @@ function initSubmodule(name) {
         GIRepository.Repository.prepend_library_path(libpath);
     } else {
         // Running installed, submodule is in $(pkglibdir), nothing to do
-    }
-}
-
-// Launcher support
-
-function _launcherUsage(flags) {
-    print('Usage:');
-
-    let name = GLib.path_get_basename(System.programInvocationName);
-    if (flags & Gio.ApplicationFlags.HANDLES_OPEN)
-	print('  ' + name + ' [OPTION...] [FILE...]\n');
-    else
-	print('  ' + name + ' [OPTION...]\n');
-
-    print('Options:');
-    print('  -h, --help   Show this help message');
-    print('  --version    Show the application version');
-}
-
-function _parseLaunchArgs(args, params) {
-    let newArgs = [];
-
-    for (let i = 0; i < args.length; i++) {
-	switch (args[i]) {
-	case '--':
-	    newArgs.concat(args.slice(i));
-	    return newArgs;
-
-	case '--help':
-	case '-h':
-	    _launcherUsage(params.flags);
-	    System.exit(0);
-	    break;
-
-	case '--version':
-	    print(params.name + ' ' + params.version);
-	    System.exit(0);
-	    break;
-
-	default:
-	    newArgs.push(args[i]);
-	}
-    }
-
-    return newArgs;
-}
-
-function launch(params) {
-    params.flags = params.flags || 0;
-    let args = _parseLaunchArgs(ARGV, params);
-
-    if (_runningFromSource()) {
-	return start(params, args);
-    } else {
-	params.flags |= Gio.ApplicationFlags.IS_LAUNCHER;
-
-	let app = new Gio.Application({ application_id: params.name,
-					flags: params.flags });
-	return app.run(args);
     }
 }

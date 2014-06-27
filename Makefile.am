@@ -1,6 +1,7 @@
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
+DISTCHECK_CONFIGURE_FLAGS = --disable-dogtail
 
-SUBDIRS = po data src
+SUBDIRS = po data src tests
 
 MAINTAINERCLEANFILES = \
 	$(srcdir)/INSTALL \
@@ -17,7 +18,13 @@ MAINTAINERCLEANFILES = \
 	$(srcdir)/missing \
 	$(srcdir)/mkinstalldirs
 
-GITIGNOREFILES = .anjuta .anjuta_sym_db.db m4/ rpms/
+GITIGNOREFILES = \
+	.anjuta \
+	.anjuta_sym_db.db \
+	m4/intltool.m4 \
+	m4/libtool.m4 \
+	m4/lt* \
+	rpms/
 
 distdir = $(PACKAGE_TARNAME)-$(VERSION)
 

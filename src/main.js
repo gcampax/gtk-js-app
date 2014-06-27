@@ -51,10 +51,7 @@ const MyApplication = new Lang.Class({
     Extends: Gtk.Application,
 
     _init: function() {
-        this.parent({ application_id: pkg.name,
-                      flags: pkg.appFlags });
-        if (this.flags & Gio.ApplicationFlags.IS_SERVICE)
-            this.inactivity_timeout = 60000;
+        this.parent({ application_id: pkg.name });
 
         GLib.set_application_name(_("My JS Application"));
     },
