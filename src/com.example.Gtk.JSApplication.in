@@ -1,5 +1,4 @@
 #!@GJS@
-imports.searchPath.push("@pkgdatadir@");
 imports.package.init({ name: "com.example.Gtk.JSApplication",
                        version: "@PACKAGE_VERSION@",
                        prefix: "@prefix@",

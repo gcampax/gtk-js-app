@@ -10,10 +10,6 @@ com.example.Gtk.JSApplication.src.gresource: com.example.Gtk.JSApplication.src.g
 resourcedir = $(pkgdatadir)
 resource_DATA = com.example.Gtk.JSApplication.src.gresource
 
-# Legacy, until we can depend on package.js provided by gjs
-jsdir = $(pkgdatadir)
-dist_js_DATA = package.js
-
 com.example.Gtk.JSApplication: com.example.Gtk.JSApplication.in
 	$(AM_V_GEN) sed \
 		-e "s|[@]GJS@|$(GJS)|g" \
