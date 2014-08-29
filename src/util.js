@@ -54,15 +54,15 @@ function loadStyleSheet(resource) {
 function initActions(actionMap, simpleActionEntries, context) {
     simpleActionEntries.forEach(function(entry) {
         let filtered = Params.filter(entry, { activate: null,
-                                              state_changed: null,
+                                              change_state: null,
                                               context: null });
         let action = new Gio.SimpleAction(entry);
 
         let context = filtered.context || actionMap;
         if (filtered.activate)
             action.connect('activate', filtered.activate.bind(context));
-        if (filtered.state_changed)
-            action.connect('state-changed', filtered.state_changed.bind(context));
+        if (filtered.change_state)
+            action.connect('change-state', filtered.change_state.bind(context));
 
         actionMap.add_action(action);
     });
