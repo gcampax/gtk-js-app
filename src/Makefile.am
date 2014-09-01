@@ -34,7 +34,7 @@ CLEANFILES = \
 
 install-exec-hook:
 	$(MKDIR_P) $(DESTDIR)$(bindir)
-	$(LN_S) $(appdir)/com.example.Gtk.JSApplication $(DESTDIR)$(bindir)/$(PACKAGE_TARNAME)
+	ln -sf $(appdir)/com.example.Gtk.JSApplication $(DESTDIR)$(bindir)/$(PACKAGE_TARNAME)
 uninstall-hook:
 	-rm -f $(DESTDIR)$(bindir)/$(PACKAGE_TARNAME)
 
