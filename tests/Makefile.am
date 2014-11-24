@@ -30,4 +30,4 @@ else
 EXTRA_DIST += testutil.py $(dogtail_tests)
 endif
 
-include $(top_srcdir)/git.mk
+-include $(top_srcdir)/git.mk
