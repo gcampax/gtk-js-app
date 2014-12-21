@@ -49,4 +49,4 @@ clean-local:
 
 EXTRA_DIST = $(PACKAGE_NAME).spec
 
-include $(top_srcdir)/git.mk
+-include $(top_srcdir)/git.mk
