@@ -30,6 +30,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 const Params = imports.params;
+const System = imports.system;
 
 function loadUI(resourcePath, objects) {
     let ui = new Gtk.Builder();
