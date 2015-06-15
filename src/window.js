@@ -35,6 +35,9 @@ const Util = imports.util;
 const MainWindow = new Lang.Class({
     Name: 'MainWindow',
     Extends: Gtk.ApplicationWindow,
+    Template: 'resource:///com/example/Gtk/JSApplication/main.ui',
+    Children: ['main-grid', 'main-search-bar', 'main-search-entry',
+               'search-active-button'],
     Properties: { 'search-active': GObject.ParamSpec.boolean('search-active', '', '', GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE, false) },
 
     _init: function(params) {
@@ -55,29 +58,18 @@ const MainWindow = new Lang.Class({
                             parameter_type: new GLib.VariantType('b'),
                             state: new GLib.Variant('b', false) }]);
 
-        let builder = new Gtk.Builder();
-        builder.add_from_resource('/com/example/Gtk/JSApplication/main.ui');
-
-        this.set_titlebar(builder.get_object('main-header'));
-
-        let searchBtn = builder.get_object('search-active-button');
-        this.bind_property('search-active', searchBtn, 'active',
+        this.bind_property('search-active', this.search_active_button, 'active',
                            GObject.BindingFlags.SYNC_CREATE |
                            GObject.BindingFlags.BIDIRECTIONAL);
-        this._searchBar = builder.get_object('main-search-bar');
-        this.bind_property('search-active', this._searchBar, 'search-mode-enabled',
+        this.bind_property('search-active', this.main_search_bar, 'search-mode-enabled',
                            GObject.BindingFlags.SYNC_CREATE |
                            GObject.BindingFlags.BIDIRECTIONAL);
-        let searchEntry = builder.get_object('main-search-entry');
-        this._searchBar.connect_entry(searchEntry);
+        this.main_search_bar.connect_entry(this.main_search_entry);
 
-        let grid = builder.get_object('main-grid');
         this._view = new MainView();
         this._view.visible_child_name = (Math.random() <= 0.5) ? 'one' : 'two';
-        grid.add(this._view);
-
-        this.add(grid);
-        grid.show_all();
+        this.main_grid.add(this._view);
+        this.main_grid.show_all();
 
         // Due to limitations of gobject-introspection wrt GdkEvent and GdkEventKey,
         // this needs to be a signal handler
@@ -98,7 +90,7 @@ const MainWindow = new Lang.Class({
     },
 
     _handleKeyPress: function(self, event) {
-        return this._searchBar.handle_event(event);
+        return this.main_search_bar.handle_event(event);
     },
 
     _new: function() {
