@@ -1,0 +1,31 @@
+{
+    "app-id": "com.example.Gtk.JSApplication",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.24",
+    "branch": "stable",
+    "sdk": "org.gnome.Sdk",
+    "command": "/app/bin/com.example.Gtk.JSApplication",
+    "finish-args": [
+        "--share=ipc", "--socket=x11",
+        "--socket=wayland",
+        "--share=network",
+        "--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",
+        "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
+    ],
+    "cleanup": ["/include", "/lib/pkgconfig",
+                "/share/pkgconfig", "/share/aclocal",
+                "/man", "/share/man", "/share/gtk-doc",
+                "/share/vala",
+                "*.la", "*.a"],
+    "modules": [
+        {
+            "name": "gtk-js-app",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/gcampax/gtk-js-app"
+                }
+            ]
+        }
+    ]
+}
