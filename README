@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgcampax%2Fgtk-js-app.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fgcampax%2Fgtk-js-app?ref=badge_shield)
+
 About My JS Application
 =======================
 
@@ -35,3 +37,7 @@ Most of the package is under a 3-clause BSD license, to
 make it suitable for inclusion in any application.
 libgd, which is only included as a submodule but is part
 of the tarball distribution, is under the LGPLv2+.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgcampax%2Fgtk-js-app.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fgcampax%2Fgtk-js-app?ref=badge_large)
