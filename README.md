@@ -4,7 +4,7 @@ About My JS Application
 My JS Application, as the name suggests, is nothing but an
 application written in JS. It installs, and it runs.
 It's meant as an example of the GNOME application platform,
-and in particular Gtk, Gd and the Gjs package system.
+and in particular Gtk and the Gjs package system.
 
 It should also work as a template for developing a real
 application, ie. one that does something, without spending
@@ -31,7 +31,5 @@ transparency between the installed and not installed cases.
 License
 =======
 
-Most of the package is under a 3-clause BSD license, to
+The package is under a 3-clause BSD license, to
 make it suitable for inclusion in any application.
-libgd, which is only included as a submodule but is part
-of the tarball distribution, is under the LGPLv2+.
