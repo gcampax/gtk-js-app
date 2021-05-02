@@ -20,9 +20,9 @@ bar, it has a search bar and it has multiple page stack.
 On the developer side, the most prominent feature is
 that My JS Application runs uninstalled without special
 environment variables or command line args, ie you should
-be able to run './src/my-js-app' and stuff should just
+be able to run `./src/my-js-app` and stuff should just
 work. Or even better, you should be able to press the
-F3 in Anjuta.
+<kbd>F3</kbd> in Anjuta.
 
 Also, it features an util module, which deals with
 GtkBuilder and GtkCssProvider, again providing
