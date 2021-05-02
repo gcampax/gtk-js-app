@@ -13,7 +13,7 @@
       a real application) for the following GNOME and Freedesktop techologies:
     </_p>
     <ul>
-      <_li>The build system (autotools based)</_li>
+      <_li>The build system (Meson based)</_li>
       <_li>Configuring and using GSettings</_li>
       <_li>Using GResources for source and data</_li>
       <_li>Desktop file and appdata</_li>
