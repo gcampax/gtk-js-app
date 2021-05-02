@@ -7,7 +7,6 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
-const Params = imports.params;
 const System = imports.system;
 
 function loadUI(resourcePath, objects) {
@@ -30,18 +29,20 @@ function loadStyleSheet(resource) {
                                              Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
 
-function initActions(actionMap, simpleActionEntries, context) {
+function initActions(actionMap, simpleActionEntries, defaultContext = actionMap) {
     simpleActionEntries.forEach(function(entry) {
-        let filtered = Params.filter(entry, { activate: null,
-                                              change_state: null,
-                                              context: null });
-        let action = new Gio.SimpleAction(entry);
+        const {
+            activate = null,
+            change_state = null,
+            context = defaultContext,
+            ...params
+        } = entry;
+        const action = new Gio.SimpleAction(params);
 
-        let context = filtered.context || actionMap;
-        if (filtered.activate)
-            action.connect('activate', filtered.activate.bind(context));
-        if (filtered.change_state)
-            action.connect('change-state', filtered.change_state.bind(context));
+        if (activate)
+            action.connect('activate', activate.bind(context));
+        if (change_state)
+            action.connect('change-state', change_state.bind(context));
 
         actionMap.add_action(action);
     });

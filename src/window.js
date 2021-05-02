@@ -6,7 +6,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
-const Params = imports.params;
 
 const Util = imports.util;
 
@@ -19,10 +18,12 @@ const MainWindow = new Lang.Class({
     Properties: { 'search-active': GObject.ParamSpec.boolean('search-active', '', '', GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE, false) },
 
     _init: function(params) {
-        params = Params.fill(params, { title: GLib.get_application_name(),
-                                       default_width: 640,
-                                       default_height: 480 });
-        this.parent(params);
+        this.parent({
+            title: GLib.get_application_name(),
+            default_width: 640,
+            default_height: 480,
+            ...params,
+        });
 
         this._searchActive = false;
 
@@ -103,9 +104,11 @@ const MainView = new Lang.Class({
     Extends: Gtk.Stack,
 
     _init: function(params) {
-        params = Params.fill(params, { hexpand: true,
-                                       vexpand: true });
-        this.parent(params);
+        this.parent({
+            hexpand: true,
+            vexpand: true,
+            ...params,
+        });
 
         this._settings = Util.getSettings(pkg.name);
 
