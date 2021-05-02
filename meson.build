@@ -1,6 +1,6 @@
 project('gtk-js-app', 'c',
   version: '1.0.0',
-  meson_version: '>= 0.36.0',
+  meson_version: '>= 0.50.0',
 )
 
 app_id = 'com.example.Gtk.JSApplication'
