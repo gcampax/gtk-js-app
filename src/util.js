@@ -2,11 +2,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // SPDX-FileCopyrightText: 2013 Giovanni Campagna <scampa.giovanni@gmail.com>
 
+/* exported arrayEqual, getSettings, initActions, loadStyleSheet, loadIcon,
+    loadUI */
+
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 const System = imports.system;
 
 function loadUI(resourcePath, objects) {
@@ -23,14 +24,14 @@ function loadUI(resourcePath, objects) {
 
 function loadStyleSheet(resource) {
     let provider = new Gtk.CssProvider();
-    provider.load_from_file(Gio.File.new_for_uri('resource://' + resource));
+    provider.load_from_file(Gio.File.new_for_uri(`resource://${resource}`));
     Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
-                                             provider,
-                                             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        provider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
 
 function initActions(actionMap, simpleActionEntries, defaultContext = actionMap) {
-    simpleActionEntries.forEach(function(entry) {
+    simpleActionEntries.forEach(function (entry) {
         const {
             activate = null,
             change_state = null,
@@ -49,12 +50,13 @@ function initActions(actionMap, simpleActionEntries, defaultContext = actionMap)
 }
 
 function arrayEqual(one, two) {
-    if (one.length != two.length)
+    if (one.length !== two.length)
         return false;
 
-    for (let i = 0; i < one.length; i++)
-        if (one[i] != two[i])
+    for (let i = 0; i < one.length; i++) {
+        if (one[i] !== two[i])
             return false;
+    }
 
     return true;
 }
@@ -66,29 +68,32 @@ function getSettings(schemaId, path) {
     if (!pkg.moduledir.startsWith('resource://')) {
         // Running from the source tree
         schemaSource = GioSSS.new_from_directory(pkg.pkgdatadir,
-                                                 GioSSS.get_default(),
-                                                 false);
+            GioSSS.get_default(),
+            false);
     } else {
         schemaSource = GioSSS.get_default();
     }
 
     let schemaObj = schemaSource.lookup(schemaId, true);
     if (!schemaObj) {
-        log('Missing GSettings schema ' + schemaId);
+        log(`Missing GSettings schema ${schemaId}`);
         System.exit(1);
     }
 
-    if (path === undefined)
-        return new Gio.Settings({ settings_schema: schemaObj });
-    else
-        return new Gio.Settings({ settings_schema: schemaObj,
-                                  path: path });
+    if (path === undefined) {
+        return new Gio.Settings({settings_schema: schemaObj});
+    } else {
+        return new Gio.Settings({
+            settings_schema: schemaObj,
+            path,
+        });
+    }
 }
 
 function loadIcon(iconName, size) {
     let theme = Gtk.IconTheme.get_default();
 
     return theme.load_icon(iconName,
-                           size,
-                           Gtk.IconLookupFlags.GENERIC_FALLBACK);
+        size,
+        Gtk.IconLookupFlags.GENERIC_FALLBACK);
 }

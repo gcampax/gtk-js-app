@@ -2,13 +2,16 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // SPDX-FileCopyrightText: 2013 Giovanni Campagna <scampa.giovanni@gmail.com>
 
+/* exported main */
+
 pkg.initGettext();
-pkg.initFormat();
-pkg.require({ 'Gdk': '3.0',
-              'Gio': '2.0',
-              'GLib': '2.0',
-              'GObject': '2.0',
-              'Gtk': '3.0' });
+pkg.require({
+    'Gdk': '3.0',
+    'Gio': '2.0',
+    'GLib': '2.0',
+    'GObject': '2.0',
+    'Gtk': '3.0',
+});
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -19,7 +22,7 @@ const Util = imports.util;
 const Window = imports.window;
 
 function initEnvironment() {
-    window.getApp = function() {
+    globalThis.getApp = function () {
         return Gio.Application.get_default();
     };
 }
@@ -48,16 +51,17 @@ const MyApplication = GObject.registerClass(class MyApplication extends Gtk.Appl
 
         Util.loadStyleSheet('/com/example/Gtk/JSApplication/application.css');
 
-        Util.initActions(this,
-                         [{ name: 'quit',
-                            activate: this._onQuit }]);
+        Util.initActions(this, [{
+            name: 'quit',
+            activate: this._onQuit,
+        }]);
         this._initAppMenu();
 
         log(_("My JS Application started"));
     }
 
     vfunc_activate() {
-        (new Window.MainWindow({ application: this })).show();
+        new Window.MainWindow({application: this}).show();
     }
 
     vfunc_shutdown() {
@@ -70,5 +74,5 @@ const MyApplication = GObject.registerClass(class MyApplication extends Gtk.Appl
 function main(argv) {
     initEnvironment();
 
-    return (new MyApplication()).run(argv);
+    return new MyApplication().run(argv);
 }
