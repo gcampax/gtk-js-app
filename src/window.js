@@ -9,16 +9,14 @@ const Lang = imports.lang;
 
 const Util = imports.util;
 
-const MainWindow = new Lang.Class({
-    Name: 'MainWindow',
-    Extends: Gtk.ApplicationWindow,
+var MainWindow = GObject.registerClass({
     Template: 'resource:///com/example/Gtk/JSApplication/main.ui',
     Children: ['main-grid', 'main-search-bar', 'main-search-entry',
                'search-active-button'],
     Properties: { 'search-active': GObject.ParamSpec.boolean('search-active', '', '', GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE, false) },
-
-    _init: function(params) {
-        this.parent({
+}, class MainWindow extends Gtk.ApplicationWindow {
+    _init(params) {
+        super._init({
             title: GLib.get_application_name(),
             default_width: 640,
             default_height: 480,
@@ -53,11 +51,11 @@ const MainWindow = new Lang.Class({
         // Due to limitations of gobject-introspection wrt GdkEvent and GdkEventKey,
         // this needs to be a signal handler
         this.connect('key-press-event', Lang.bind(this, this._handleKeyPress));
-    },
+    }
 
     get search_active() {
         return this._searchActive;
-    },
+    }
 
     set search_active(v) {
         if (this._searchActive == v)
@@ -66,17 +64,17 @@ const MainWindow = new Lang.Class({
         this._searchActive = v;
         // do something with v
         this.notify('search-active');
-    },
+    }
 
-    _handleKeyPress: function(self, event) {
+    _handleKeyPress(self, event) {
         return this.main_search_bar.handle_event(event);
-    },
+    }
 
-    _new: function() {
+    _new() {
         log(_("New something"));
-    },
+    }
 
-    _about: function() {
+    _about() {
         let aboutDialog = new Gtk.AboutDialog(
             { authors: [ 'Giovanni Campagna <gcampagna@src.gnome.org>' ],
               translator_credits: _("translator-credits"),
@@ -96,15 +94,12 @@ const MainWindow = new Lang.Class({
         aboutDialog.connect('response', function() {
             aboutDialog.destroy();
         });
-    },
+    }
 });
 
-const MainView = new Lang.Class({
-    Name: 'MainView',
-    Extends: Gtk.Stack,
-
-    _init: function(params) {
-        this.parent({
+const MainView = GObject.registerClass(class MainView extends Gtk.Stack {
+    _init(params) {
+        super._init({
             hexpand: true,
             vexpand: true,
             ...params,
@@ -123,9 +118,9 @@ const MainView = new Lang.Class({
         two.connect('clicked', Lang.bind(this, function() {
             this.visible_child_name = 'one';
         }));
-    },
+    }
 
-    _addPage: function(name, label, button) {
+    _addPage(name, label, button) {
         let labelWidget = new Gtk.Label({ label: label });
         labelWidget.get_style_context().add_class('big-label');
         let buttonWidget = new Gtk.Button({ label: button });
@@ -138,12 +133,12 @@ const MainView = new Lang.Class({
 
         this.add_named(grid, name);
         return buttonWidget;
-    },
+    }
 
-    _syncLabel: function() {
+    _syncLabel() {
         if (this._settings.get_boolean('show-exclamation-mark'))
             this._buttonOne.label = _("Hello, world!");
         else
             this._buttonOne.label = _("Hello world");
-    },
+    }
 });
