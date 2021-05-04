@@ -18,11 +18,13 @@ from a core application: it has a main window with a header
 bar, it has a search bar and it has multiple page stack.
 
 On the developer side, the most prominent feature is
-that My JS Application runs uninstalled without special
-environment variables or command line args, ie you should
-be able to run `./src/my-js-app` and stuff should just
-work. Or even better, you should be able to press the
-<kbd>F3</kbd> in Anjuta.
+that My JS Application runs uninstalled with a special
+Meson target. You should be able to run
+```
+meson _build
+meson compile -C _build devel
+```
+and everything should just work, without having to run `ninja install`.
 
 Also, it features an util module, which deals with
 GtkBuilder and GtkCssProvider, again providing
