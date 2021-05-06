@@ -1,6 +1,8 @@
 #!@GJS@
-imports.package.init({ name: "com.example.Gtk.JSApplication",
-                       version: "@PACKAGE_VERSION@",
-                       prefix: "@prefix@",
-                       libdir: "@libdir@" });
+imports.package.init({
+    name: 'com.example.Gtk.JSApplication',
+    version: '@PACKAGE_VERSION@',
+    prefix: '@prefix@',
+    libdir: '@libdir@',
+});
 imports.package.run(imports.main);

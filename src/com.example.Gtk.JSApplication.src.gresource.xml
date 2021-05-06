@@ -2,7 +2,6 @@
 <gresources>
   <gresource prefix="/com/example/Gtk/JSApplication/js">
     <file>main.js</file>
-    <file>params.js</file>
     <file>util.js</file>
     <file>window.js</file>
   </gresource>
